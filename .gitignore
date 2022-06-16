@@ -1,0 +1,8 @@
+auth.json
+/node_modules
+/vendor
+/.idea
+/coverage
+.phpunit.result.cache
+
+phpunit-report.xml

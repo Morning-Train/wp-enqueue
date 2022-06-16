@@ -1,0 +1,42 @@
+{
+    "name": "morningtrain/wp-enqueue",
+    "description": "A simple tool for loading scripts and styles",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "version": "v0.0.1",
+    "authors": [
+        {
+            "name": "Morningtrain",
+            "email": "mh@morningtrain.dk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Morningtrain\\WP\\Enqueue\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Morningtrain\\WP\\Enqueue\\Tests\\Unit\\": "tests/Unit",
+            "Morningtrain\\WP\\Enqueue\\Tests\\Feature\\": "tests/Feature"
+        }
+    },
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^1.21",
+        "brain/monkey": "~2.0.0"
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "prefer-stable": true
+}
