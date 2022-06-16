@@ -79,6 +79,9 @@ class Enqueue
      */
     public static function addManifest(string $file)
     {
-        static::$manifest = json_decode(file_get_contents($file), true);
+        $manifest = json_decode(file_get_contents($file), true);
+        if (is_array($manifest)) {
+            static::$manifest = $manifest;
+        }
     }
 }
