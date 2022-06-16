@@ -19,7 +19,7 @@ class Script extends \Morningtrain\WP\Enqueue\Abstracts\AbstractThing
     public function register(): void
     {
         if (Enqueue::didEnqueue()) {
-            \wp_register_script($this->handle, $this->src, $this->deps, $this->ver, $this->inFooter);
+            \wp_register_script($this->handle, $this->getUrl(), $this->deps, $this->ver, $this->inFooter);
         }
 
         $this->delay(__FUNCTION__);
@@ -28,7 +28,7 @@ class Script extends \Morningtrain\WP\Enqueue\Abstracts\AbstractThing
     public function enqueue(): void
     {
         if (Enqueue::didEnqueue()) {
-            \wp_enqueue_script($this->handle, $this->src, $this->deps, $this->ver, $this->inFooter);
+            \wp_enqueue_script($this->handle, $this->getUrl(), $this->deps, $this->ver, $this->inFooter);
         }
 
         $this->delay(__FUNCTION__);

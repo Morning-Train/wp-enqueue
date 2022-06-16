@@ -19,7 +19,7 @@ class Style extends \Morningtrain\WP\Enqueue\Abstracts\AbstractThing
     public function register(): void
     {
         if (Enqueue::didEnqueue()) {
-            \wp_register_style($this->handle, $this->src, $this->deps, $this->ver, $this->media);
+            \wp_register_style($this->handle, $this->getUrl(), $this->deps, $this->ver, $this->media);
 
         }
 
@@ -29,7 +29,7 @@ class Style extends \Morningtrain\WP\Enqueue\Abstracts\AbstractThing
     public function enqueue(): void
     {
         if (Enqueue::didEnqueue()) {
-            \wp_enqueue_style($this->handle, $this->src, $this->deps, $this->ver, $this->media);
+            \wp_enqueue_style($this->handle, $this->getUrl(), $this->deps, $this->ver, $this->media);
 
         }
 

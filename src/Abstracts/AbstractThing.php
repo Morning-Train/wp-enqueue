@@ -7,10 +7,11 @@ abstract class AbstractThing
     protected string $src = '';
     protected array $deps = [];
     protected string|bool|null $ver = false;
+    protected ?string $rootUrl;
 
     public function __construct(protected string $handle)
     {
-
+        $this->src = $handle;
     }
 
     public function src(string $src): static
@@ -32,6 +33,18 @@ abstract class AbstractThing
         $this->ver = $ver;
 
         return $this;
+    }
+
+    public function rootUrl(?string $url): static
+    {
+        $this->rootUrl = $url;
+
+        return $this;
+    }
+
+    public function getUrl()
+    {
+        return $this->rootUrl . $this->src;
     }
 
     protected abstract function register(): void;
