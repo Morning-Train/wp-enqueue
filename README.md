@@ -40,6 +40,28 @@ Then from here on your entry point will be `Morningtrain\WP\Enqueue\Enqueue`.
 
 ## Usage
 
+```php
+// A quick example!!
+Enqueue::addManifest(get_stylesheet_directory() . '/public/build/mix-manifest.json');
+Enqueue::setRootUrl(get_stylesheet_directory_uri() . '/public/build');
+
+Enqueue::script('main')
+    ->src('js/main.js')
+    ->deps('jquery')
+    ->enqueue();
+
+
+Enqueue::style('main')
+    ->src('css/main.css')
+    ->register();
+
+add_action(
+    'wp_footer',
+    function () {
+        Enqueue::style('main')->enqueue();
+    }
+);
+```
 
 ### Before you start
 
