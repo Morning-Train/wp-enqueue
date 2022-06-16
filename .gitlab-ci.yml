@@ -32,8 +32,6 @@ test:
   before_script:
     - php --ini
     - echo "xdebug.mode=coverage" > /usr/local/etc/php/conf.d/xdebug.ini
-    - composer config gitlab-token.backuptrain.dk $GITLAB_PACKAGES_TOKEN
-    #- composer config http-basic.backuptrain.dk gitlab-ci-token "$CI_JOB_TOKEN"
   script:
     - php -v
     - composer -V # Composer version 1.10.15 2020-10-13 15:59:09
