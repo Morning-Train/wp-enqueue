@@ -38,6 +38,8 @@ class Style extends \Morningtrain\WP\Enqueue\Abstracts\AbstractThing
     {
         if (Enqueue::didEnqueue()) {
             \wp_register_style($this->handle, $this->getUrl(), $this->deps, $this->ver, $this->media);
+
+            return;
         }
 
         $this->delay(__FUNCTION__);
@@ -53,6 +55,8 @@ class Style extends \Morningtrain\WP\Enqueue\Abstracts\AbstractThing
     {
         if (Enqueue::didEnqueue()) {
             \wp_enqueue_style($this->handle, $this->getUrl(), $this->deps, $this->ver, $this->media);
+
+            return;
         }
 
         $this->delay(__FUNCTION__);
