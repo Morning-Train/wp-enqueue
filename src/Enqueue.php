@@ -76,6 +76,14 @@ class Enqueue
     }
 
     /**
+     * Get the Root Directory
+     */
+    public static function getRootUrl(): ?string
+    {
+        return static::$rootUrl;
+    }
+
+    /**
      * Add a mix-manifest.json file for use in hashing
      * Note that this file should be located in the root dir. Where setPublicPath also points to
      *
