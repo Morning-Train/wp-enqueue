@@ -23,12 +23,14 @@ class Enqueue
      * @see https://developer.wordpress.org/reference/functions/wp_enqueue_script/
      *
      * @param  string  $handle
+     * @param  string  $src  Optional. The src property
      *
      * @return Script
      */
-    public static function script(string $handle): Script
+    public static function script(string $handle, string $src = ''): Script
     {
         return (new Script($handle))
+            ->src($src)
             ->rootUrl(static::$rootUrl)
             ->useMixManifest(static::$manifest);
     }
@@ -39,12 +41,14 @@ class Enqueue
      * @see https://developer.wordpress.org/reference/functions/wp_enqueue_style/
      *
      * @param  string  $handle
+     * @param  string  $src  Optional. The src property
      *
      * @return Style
      */
-    public static function style(string $handle): Style
+    public static function style(string $handle, string $src = ''): Style
     {
         return (new Style($handle))
+            ->src($src)
             ->rootUrl(static::$rootUrl)
             ->useMixManifest(static::$manifest);
 
