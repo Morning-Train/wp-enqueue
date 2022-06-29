@@ -2,8 +2,7 @@
     "name": "morningtrain/wp-enqueue",
     "description": "A tool for enqueueing assets in WordPress with support for Laravel Mix manifest",
     "minimum-stability": "stable",
-    "license": "proprietary",
-    "version": "v0.2.1",
+    "license": "MIT",
     "authors": [
         {
             "name": "Morningtrain",
