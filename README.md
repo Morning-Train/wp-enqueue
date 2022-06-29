@@ -77,6 +77,12 @@ WordPress is ready.
 \Morningtrain\WP\Enqueue\Enqueue::setRootUrl(get_stylesheet_directory_uri() . '/public/build');
 ```
 
+You may also get the url by calling `Enqueue::getRootUrl()`
+```php
+// Getting the root URL
+$rootUrl = \Morningtrain\WP\Enqueue\Enqueue::getRootUrl();
+```
+
 ### Adding a MixManifest file
 
 ```php
