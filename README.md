@@ -1,11 +1,12 @@
 # WP Enqueue
 
-For easy script and style enqueueing. With Laravel Mix Manifest support!
+For easy script and style enqueueing in WordPress. With Laravel Mix Manifest support!
 
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
+    - [Installation](#installation)
 - [Usage](#usage)
     - [Before you start](#before-you-start)
     - [Defining the root Url](#defining-the-root-url)
@@ -30,43 +31,55 @@ This tool lets you:
 
 ## Getting Started
 
-Fist install the package!
+Fist [install](#installation) the package!
 
 Then from here on your entry point will be `Morningtrain\WP\Enqueue\Enqueue`.
 
+### Installation
+
+This tool is available as a package and can be installed through composer:
+
+```
+composer require morningtrain/wp-enqueue
+```
+
 ## Usage
 
+Here is a quick example to get you started!
+
 ```php
-// A quick example!!
+// functions.php (or plugin.php)
 Enqueue::addManifest(get_stylesheet_directory() . '/public/build/mix-manifest.json');
 Enqueue::setRootUrl(get_stylesheet_directory_uri() . '/public/build');
 
+// Then wherever you wish to enqueue - preferably in the wp_enqueue_scripts action
 Enqueue::script('main')
     ->src('js/main.js')
     ->deps('jquery')
     ->enqueue();
 
-
+// Or to simply register a stylesheet
 Enqueue::style('main')
     ->src('css/main.css')
     ->register();
 
-add_action(
-    'wp_footer',
-    function () {
-        Enqueue::style('main')->enqueue();
-    }
-);
+// In a block, on a route or in a condition somewhere you can now enqueue the already registered stylesheet
+Enqueue::style('main')->enqueue();
 ```
 
 ### Before you start
 
 All relative paths should match paths in `webpack.mix.js`.
 
-Don't worry about enqueueing assets before the `wp_enqueue_scripts` hook as this package will delay the enqueueing until
-WordPress is ready.
+Note: Enqueueing assets before the `wp_enqueue_scripts` hook automatically delay the enqueueing until WordPress is
+ready. You should, of course, still enqueue properly in the right hook.
 
 ### Defining the root Url
+
+You may define the root URL of your build directory.
+
+By doing this you can now enqueue assets using a relative path. This should match the one defined in `webpack.mix.js` if
+you are using [Laravel Mix](https://laravel-mix.com/)
 
 ```php
 // Setting the root URL
@@ -74,12 +87,18 @@ WordPress is ready.
 ```
 
 You may also get the url by calling `Enqueue::getRootUrl()`
+
 ```php
 // Getting the root URL
 $rootUrl = \Morningtrain\WP\Enqueue\Enqueue::getRootUrl();
 ```
 
 ### Adding a MixManifest file
+
+If you are using [Laravel Mix](https://laravel-mix.com/) then you can add the generated `mix-manifest.json` file. By
+doing this all enqueued assets will automatically use the hashed sources.
+
+This is an easy and convenient way to clear client cached assets without worry.
 
 ```php
 // Adding the manifest file
@@ -91,6 +110,13 @@ $rootUrl = \Morningtrain\WP\Enqueue\Enqueue::getRootUrl();
 Loading a script or a style is almost the same!
 Construct either a `Script` or a `Style` from `Enqueue`
 
+Then, using a fluid api, you can configure your asset and then either enqueue or register at the end.
+
+Note: These methods act the same as, and wraps, WordPress
+methods [wp_enqueue_script()](https://developer.wordpress.org/reference/functions/wp_enqueue_script/)
+and [wp_enqueue_style()](https://developer.wordpress.org/reference/functions/wp_enqueue_style/) and their register
+equivalents.
+
 ```php
 // Beginning an Enqueue chain
 // This is how you start enqueueing or registering a script
@@ -99,9 +125,11 @@ Construct either a `Script` or a `Style` from `Enqueue`
 \Morningtrain\WP\Enqueue\Enqueue::style('my-style');
 ```
 
-After this inspect the instance returned. All options are available as chainable methods.
+After this inspect the instance returned. All options are available as chainable methods!
 
 #### Enqueueing
+
+To enqueue simply end your chain by calling `enqueue()`
 
 ```php
 // Enqueue a script called 'my-script' which is located in the /js directory
@@ -110,7 +138,8 @@ After this inspect the instance returned. All options are available as chainable
     ->enqueue();
 
 // Or you may supply the source as the second param as so
-\Morningtrain\WP\Enqueue\Enqueue::script('my-script', 'js/my-script.js');
+\Morningtrain\WP\Enqueue\Enqueue::script('my-script', 'js/my-script.js')
+    ->enqueue();
 ```
 
 ##### Registering
@@ -124,7 +153,7 @@ To register instead of enqueueing use `register()`
     ->register();
 ```
 
-Then later you can enqueue it like this:
+Then later you can enqueue your asset this way:
 
 ```php
 // Enqueue a script called 'my-script' which has already been registered
@@ -134,9 +163,14 @@ Then later you can enqueue it like this:
 
 ### Options
 
-**NOTE:** `deps()` also accepts a string
+There are the same options as the methods these classes wrap.
+
+**Note:** `deps()` also accepts a string and if you call it multiple times in the same chain then every call pushes its
+value to the list.
 
 #### Script
+
+Here is an example using all available options:
 
 See [wp_enqueue_script](https://developer.wordpress.org/reference/functions/wp_enqueue_script/) on
 developer.wordpress.org
@@ -151,6 +185,8 @@ developer.wordpress.org
 ```
 
 #### Style
+
+Here is an example using all available options:
 
 See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_enqueue_style/) on developer.wordpress.org
 
