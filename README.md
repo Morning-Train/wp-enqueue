@@ -106,6 +106,9 @@ After this inspect the instance returned. All options are available as chainable
 \Morningtrain\WP\Enqueue\Enqueue::script('my-script')
     ->src('js/my-script.js')
     ->enqueue();
+
+// Or you may supply the source as the second param as so
+\Morningtrain\WP\Enqueue\Enqueue::script('my-script', 'js/my-script.js');
 ```
 
 ##### Registering
