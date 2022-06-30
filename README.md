@@ -17,15 +17,19 @@ For easy script and style enqueueing in WordPress. With Laravel Mix Manifest sup
     - [Options](#options)
         - [Script](#script)
         - [Style](#style)
+- [Credits](#credits)
+- [Testing](#testing)
+- [License](#license)
 
 ## Introduction
 
-This tool is made for making enqueueing and registering WordPress scripts a bit more expressive and to make using
-laravel Mix Manifest a bit easier to manage.
+This tool is made for making the enqueueing and registering of WordPress scripts a bit more expressive and to make using
+laravel Mix Manifest much easier to manage.
 
 This tool lets you:
 
-- Define a root URL for your scripts and styles so that you only have to use `get_stylesheet_directory_uri` once
+- Define a root URL for your scripts and stylesheets so that you only have to use `get_stylesheet_directory_uri` once
+  and instead use relative paths when enqueueing
 - Add your `mix-manifest.json` file so that all mix compiled assets gets hashed automatically
 - Use a fluid interface for enqueueing assets
 
@@ -33,7 +37,7 @@ This tool lets you:
 
 Fist [install](#installation) the package!
 
-Then from here on your entry point will be `Morningtrain\WP\Enqueue\Enqueue`.
+Then from here on your entry point will be `\Morningtrain\WP\Enqueue\Enqueue`.
 
 ### Installation
 
@@ -45,7 +49,7 @@ composer require morningtrain/wp-enqueue
 
 ## Usage
 
-Here is a quick example to get you started!
+Here is a quick example of how this package works!
 
 ```php
 // functions.php (or plugin.php)
@@ -71,7 +75,24 @@ Enqueue::style('main')->enqueue();
 
 All relative paths should match paths in `webpack.mix.js`.
 
-Note: Enqueueing assets before the `wp_enqueue_scripts` hook automatically delay the enqueueing until WordPress is
+So if you have the following in your mix:
+
+```javascript
+// webpack.mix.js
+
+let mix = require('laravel-mix');
+
+mix.js('resources/js/app.js', 'js').setPublicPath('public/build');
+```
+
+Then your public directory would be `public/build` and all assets would use a source relative to this path. So in the
+above example, you would enqueue `app.js` like this:
+
+```php
+Enqueue::script('app', 'js/app.js')->enqueue();
+```
+
+Note: Enqueueing assets before the `wp_enqueue_scripts` hook will automatically delay the enqueueing until WordPress is
 ready. You should, of course, still enqueue properly in the right hook.
 
 ### Defining the root Url
@@ -103,6 +124,12 @@ This is an easy and convenient way to clear client cached assets without worry.
 ```php
 // Adding the manifest file
 \Morningtrain\WP\Enqueue\Enqueue::addManifest(get_stylesheet_directory() . '/public/build/mix-manifest.json');
+```
+
+You may also retrieve the manifest content
+```php
+// Adding the manifest content
+\Morningtrain\WP\Enqueue\Enqueue::getManifest();
 ```
 
 ### Loading scripts and styles
@@ -198,3 +225,18 @@ See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_en
     ->media('print')
     ->enqueue();
 ```
+
+## Credits
+
+- [Mathias Munk](https://github.com/mrmoeg)
+- [All Contributors](../../contributors)
+
+## Testing
+
+```bash
+composer test
+```
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

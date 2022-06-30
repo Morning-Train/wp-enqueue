@@ -96,4 +96,14 @@ class Enqueue
             static::$manifest = $manifest;
         }
     }
+
+    /**
+     * Get the manifest.json content as array
+     *
+     * @return array
+     */
+    public static function getManifest(): array
+    {
+        return static::$manifest;
+    }
 }
