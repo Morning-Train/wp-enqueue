@@ -61,7 +61,8 @@ class Enqueue
      */
     public static function didEnqueue(): bool
     {
-        return \did_action('wp_enqueue_scripts');
+
+        return \did_action('wp_enqueue_scripts') || \did_action('admin_enqueue_scripts');
     }
 
     /**
