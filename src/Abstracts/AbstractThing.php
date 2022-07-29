@@ -131,6 +131,9 @@ abstract class AbstractThing
      */
     protected function delay(string $function)
     {
+        if(\is_admin()){
+            return \add_action('admin_enqueue_scripts', [$this, $function]);
+        }
         \add_action('wp_enqueue_scripts', [$this, $function]);
     }
 }
