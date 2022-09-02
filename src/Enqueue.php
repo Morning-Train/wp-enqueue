@@ -14,11 +14,13 @@ use Morningtrain\WP\Enqueue\Classes\Style;
  */
 class Enqueue
 {
-    protected static ?string $rootUrl = null;
-    protected static array $manifest = [];
+    const ROOT_KEY = 'root';
+    protected static array $directories = [];
+    protected static array $manifests = [];
 
     /**
      * Begin Enqueueing a script
+     * You may namespace your script with "::" such as "myPlugin::main.js"
      *
      * @see https://developer.wordpress.org/reference/functions/wp_enqueue_script/
      *
@@ -29,14 +31,21 @@ class Enqueue
      */
     public static function script(string $handle, string $src = ''): Script
     {
+        if (str_contains($handle, '::')) {
+            [$namespace, $handle] = explode('::', $handle);
+        } else {
+            $namespace = static::ROOT_KEY;
+        }
+
         return (new Script($handle))
             ->src($src)
-            ->rootUrl(static::$rootUrl)
-            ->useMixManifest(static::$manifest);
+            ->rootUrl(static::getDirectoryUrl($namespace))
+            ->useMixManifest(static::getManifest($namespace));
     }
 
     /**
      * Begin Enqueueing a stylesheet
+     * You may namespace your style with "::" such as "myPlugin::main.css"
      *
      * @see https://developer.wordpress.org/reference/functions/wp_enqueue_style/
      *
@@ -47,11 +56,16 @@ class Enqueue
      */
     public static function style(string $handle, string $src = ''): Style
     {
+        if (str_contains($handle, '::')) {
+            [$namespace, $handle] = explode('::', $handle);
+        } else {
+            $namespace = static::ROOT_KEY;
+        }
+
         return (new Style($handle))
             ->src($src)
-            ->rootUrl(static::$rootUrl)
-            ->useMixManifest(static::$manifest);
-
+            ->rootUrl(static::getDirectoryUrl($namespace))
+            ->useMixManifest(static::getManifest($namespace));
     }
 
     /**
@@ -73,7 +87,7 @@ class Enqueue
      */
     public static function setRootUrl(?string $url)
     {
-        static::$rootUrl = $url ? \trailingslashit($url) : null;
+        static::$directories[static::ROOT_KEY] = $url ? \trailingslashit($url) : null;
     }
 
     /**
@@ -81,7 +95,15 @@ class Enqueue
      */
     public static function getRootUrl(): ?string
     {
-        return static::$rootUrl;
+        return static::getDirectoryUrl(static::ROOT_KEY);
+    }
+
+    /**
+     * Get the Directory of a namespace
+     */
+    public static function getDirectoryUrl(string $namespace = self::ROOT_KEY): ?string
+    {
+        return static::$directories[$namespace] ?? null;
     }
 
     /**
@@ -90,11 +112,11 @@ class Enqueue
      *
      * @param  string  $file  full path to file. Filename included
      */
-    public static function addManifest(string $file)
+    public static function addManifest(string $file, string $namespace = self::ROOT_KEY)
     {
         $manifest = json_decode(file_get_contents($file), true);
         if (is_array($manifest)) {
-            static::$manifest = $manifest;
+            static::$manifests[$namespace] = $manifest;
         }
     }
 
@@ -103,8 +125,25 @@ class Enqueue
      *
      * @return array
      */
-    public static function getManifest(): array
+    public static function getManifest(string $namespace = self::ROOT_KEY): array
     {
-        return static::$manifest;
+        return static::$manifests[$namespace] ?? [];
+    }
+
+    /**
+     * Add a namespace for scripts/styles
+     * This allows the use of multiple directories and manifests in the same codebase.
+     * This is especially useful for plugins.
+     *
+     * @param  string  $namespace
+     * @param  string  $directoryUrl
+     * @param  string|null  $manifest
+     */
+    public static function addNamespace(string $namespace, string $directoryUrl, ?string $manifest = null)
+    {
+        static::$directories[$namespace] = \trailingslashit($directoryUrl);
+        if ($manifest !== null && file_exists($manifest)) {
+            static::addManifest($manifest, $namespace);
+        }
     }
 }
