@@ -17,6 +17,7 @@ For easy script and style enqueueing in WordPress. With Laravel Mix Manifest sup
     - [Options](#options)
         - [Script](#script)
         - [Style](#style)
+    - [Namespacing](#namespacing)
 - [Credits](#credits)
 - [Testing](#testing)
 - [License](#license)
@@ -223,6 +224,29 @@ See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_en
     ->deps('print-styles')
     ->ver('1.0')
     ->media('print')
+    ->enqueue();
+```
+
+
+### Namespacing
+
+You may register a namespace for a set of scripts or styles that live somewhere else in your codebase.
+
+To do this simple add the namespace and then use this namespace in your handles.
+Namespacing is especially useful when writing a plugin.
+
+
+#### Adding a namespace
+
+```php
+\Morningtrain\WP\Enqueue\Enqueue::addNamespace('myPlugin',\plugin_dir_url(__FILE__). "public/build", __DIR__ . "/public/build/mix-manifest.json");
+```
+
+#### Using a namespace
+
+```php
+\Morningtrain\WP\Enqueue\Enqueue::style('myPlugin::main')
+    ->src('css/main.css')
     ->enqueue();
 ```
 
