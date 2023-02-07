@@ -54,13 +54,13 @@ Here is a quick example of how this package works!
 
 ```php
 // functions.php (or plugin.php)
-Enqueue::addManifest(get_stylesheet_directory() . '/public/build/mix-manifest.json');
-Enqueue::setRootUrl(get_stylesheet_directory_uri() . '/public/build');
+Enqueue::setup(get_stylesheet_directory_uri() . "/public/build", get_stylesheet_directory() . "/public/build");
 
 // Then wherever you wish to enqueue - preferably in the wp_enqueue_scripts action
 Enqueue::script('main')
     ->src('js/main.js')
     ->deps('jquery')
+    ->applyAssetFile() // This applies the main.asset.php file containing dependencies and version. Dependencies are pushed to existing dependencies
     ->enqueue();
 
 // Or to simply register a stylesheet
@@ -128,6 +128,7 @@ This is an easy and convenient way to clear client cached assets without worry.
 ```
 
 You may also retrieve the manifest content
+
 ```php
 // Adding the manifest content
 \Morningtrain\WP\Enqueue\Enqueue::getManifest();
@@ -227,14 +228,12 @@ See [wp_enqueue_style](https://developer.wordpress.org/reference/functions/wp_en
     ->enqueue();
 ```
 
-
 ### Namespacing
 
 You may register a namespace for a set of scripts or styles that live somewhere else in your codebase.
 
-To do this simple add the namespace and then use this namespace in your handles.
-Namespacing is especially useful when writing a plugin.
-
+To do this simple add the namespace and then use this namespace in your handles. Namespacing is especially useful when
+writing a plugin.
 
 #### Adding a namespace
 
