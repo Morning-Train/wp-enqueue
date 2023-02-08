@@ -1,6 +1,6 @@
 # WP Enqueue
 
-For easy script and style enqueueing in WordPress. With Laravel Mix Manifest support!
+For easy script and style enqueueing in WordPress. With Laravel Mix Manifest and WP-Scripts asset file support!
 
 ## Table of Contents
 
