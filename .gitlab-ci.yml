@@ -20,7 +20,9 @@ test:
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   artifacts:
     reports:
-      cobertura: coverage/cobertura-coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
       junit: phpunit-report.xml
   cache:
     key: "$CI_COMMIT_REF_SLUG-composer"
