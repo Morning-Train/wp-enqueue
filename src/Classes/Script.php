@@ -55,7 +55,6 @@ class Script extends \Morningtrain\WP\Enqueue\Abstracts\AbstractThing
     {
         if (Enqueue::didEnqueue()) {
             \wp_enqueue_script($this->handle, $this->getUrl(), $this->deps, $this->ver, $this->inFooter);
-            \dump([$this->handle, $this->getUrl(), $this->deps, $this->ver, $this->inFooter, $this->getPath()]);
 
             return;
         }
