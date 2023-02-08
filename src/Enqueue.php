@@ -15,7 +15,11 @@ use Morningtrain\WP\Enqueue\Classes\Style;
 class Enqueue
 {
     const ROOT_KEY = 'root';
-    protected static array $directories = [];
+    // An array of urls for each namespace
+    protected static array $urls = [];
+    // An array of paths for each namespace
+    protected static array $paths = [];
+    // An array of mix-manifests for each namespace
     protected static array $manifests = [];
 
     /**
@@ -40,6 +44,7 @@ class Enqueue
         return (new Script($handle))
             ->src($src)
             ->rootUrl(static::getDirectoryUrl($namespace))
+            ->rootPath(static::getDirectoryPath($namespace))
             ->useMixManifest(static::getManifest($namespace));
     }
 
@@ -65,6 +70,7 @@ class Enqueue
         return (new Style($handle))
             ->src($src)
             ->rootUrl(static::getDirectoryUrl($namespace))
+            ->rootPath(static::getDirectoryPath($namespace))
             ->useMixManifest(static::getManifest($namespace));
     }
 
@@ -80,18 +86,19 @@ class Enqueue
     }
 
     /**
-     * Set a Root Directory
-     * This should be the URL of the setPublicPath in webpack.mix.js
+     * Setup the root url and path for built assets
      *
-     * @param  string|null  $url
+     * @param  string  $rootBaseUrl
+     * @param  string  $rootBasePath
      */
-    public static function setRootUrl(?string $url)
+    public static function setup(string $rootBaseUrl, string $rootBasePath)
     {
-        static::$directories[static::ROOT_KEY] = $url ? \trailingslashit($url) : null;
+        static::$urls[static::ROOT_KEY] = $rootBaseUrl ? \trailingslashit($rootBaseUrl) : null;
+        static::$paths[static::ROOT_KEY] = $rootBasePath ? \trailingslashit($rootBasePath) : null;
     }
 
     /**
-     * Get the Root Directory
+     * Get the Root Directory Url
      */
     public static function getRootUrl(): ?string
     {
@@ -99,11 +106,27 @@ class Enqueue
     }
 
     /**
-     * Get the Directory of a namespace
+     * Get the Directory Url of a namespace
      */
     public static function getDirectoryUrl(string $namespace = self::ROOT_KEY): ?string
     {
-        return static::$directories[$namespace] ?? null;
+        return static::$urls[$namespace] ?? null;
+    }
+
+    /**
+     * Get the Root Directory Path
+     */
+    public static function getRootPath(): ?string
+    {
+        return static::getDirectoryPath(static::ROOT_KEY);
+    }
+
+    /**
+     * Get the Directory Path of a namespace
+     */
+    public static function getDirectoryPath(string $namespace = self::ROOT_KEY): ?string
+    {
+        return static::$paths[$namespace] ?? null;
     }
 
     /**
@@ -141,7 +164,7 @@ class Enqueue
      */
     public static function addNamespace(string $namespace, string $directoryUrl, ?string $manifest = null)
     {
-        static::$directories[$namespace] = \trailingslashit($directoryUrl);
+        static::$urls[$namespace] = \trailingslashit($directoryUrl);
         if ($manifest !== null && file_exists($manifest)) {
             static::addManifest($manifest, $namespace);
         }

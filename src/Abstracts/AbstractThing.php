@@ -8,6 +8,7 @@ abstract class AbstractThing
     protected array $deps = [];
     protected string|bool|null $ver = false;
     protected ?string $rootUrl;
+    protected ?string $rootPath;
     protected array $manifest = [];
 
     /**
@@ -66,7 +67,6 @@ abstract class AbstractThing
 
     /**
      * Set the root URL
-     * If this is set then $src will be appended
      *
      * @param  string|null  $url
      * @return $this
@@ -86,6 +86,30 @@ abstract class AbstractThing
     public function getUrl()
     {
         return $this->rootUrl . $this->applyMixManifest($this->src);
+    }
+
+    /**
+     * Set the root PATH
+     * If this is set then $src will be appended
+     *
+     * @param  string|null  $path
+     * @return $this
+     */
+    public function rootPath(?string $path): static
+    {
+        $this->rootPath = $path;
+
+        return $this;
+    }
+
+    /**
+     * A getter for the src Path
+     *
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->rootPath . $this->src;
     }
 
     /**
@@ -120,6 +144,26 @@ abstract class AbstractThing
         return $src;
     }
 
+    /**
+     * Apply a WP-Scripts asset file version and dependencies if file exists
+     * The asset file is created when wp-scripts builds assets. File is names [name].asset.php and includes a wp-dependency list and a version hash
+     *
+     * @return $this
+     */
+    public function applyAssetFile(): static
+    {
+        $extension = pathinfo($this->getPath())['extension'];
+        $assetFileName = preg_replace('/\.' . $extension . '$/', '.asset.php', $this->getPath());
+        $assetFile = file_exists($assetFileName) ? require($assetFileName) : null;
+
+        if (! empty($assetFile) && is_array($assetFile) && ! empty($assetFile['version'])) {
+            $this->ver($assetFile['version']);
+            $this->deps($assetFile['dependencies']);
+        }
+
+        return $this;
+    }
+
     protected abstract function register(): void;
 
     protected abstract function enqueue(): void;
@@ -131,7 +175,7 @@ abstract class AbstractThing
      */
     protected function delay(string $function)
     {
-        if(\is_admin()){
+        if (\is_admin()) {
             return \add_action('admin_enqueue_scripts', [$this, $function]);
         }
         \add_action('wp_enqueue_scripts', [$this, $function]);
