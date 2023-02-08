@@ -53,6 +53,8 @@ composer require morningtrain/wp-enqueue
 Here is a quick example of how this package works!
 
 ```php
+use Morningtrain\WP\Enqueue\Enqueue;
+
 // functions.php (or plugin.php)
 Enqueue::setup(get_stylesheet_directory_uri() . "/public/build", get_stylesheet_directory() . "/public/build");
 
