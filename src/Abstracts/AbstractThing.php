@@ -85,7 +85,7 @@ abstract class AbstractThing
      */
     public function getUrl()
     {
-        return $this->rootUrl . $this->applyMixManifest($this->src);
+        return trailingslashit($this->rootUrl) . ltrim($this->applyMixManifest($this->src), '/\\');
     }
 
     /**
